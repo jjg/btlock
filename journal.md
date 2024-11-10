@@ -23,7 +23,7 @@ Since I'm working the file directly on the board, I have to copy it back to my l
 ```
 
 I got a very basic web server working using `asyncio`:
-```
+``` python
 import socket
 import time
 import asyncio
