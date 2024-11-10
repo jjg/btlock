@@ -1,5 +1,83 @@
 # btlock Dev Journal
 
+## 11102024
+
+Let's try turning this into a proper program now.
+
+I think a physical interface makes sense, but I don't have any additional hardware handy, so instead I think we'll do a little web interface for now and add hardware later.
+
+I've got a nice workflow using `rshell`:
+```
+$ rshell
+/home/jason/Development/btlock> connect serial /dev/ttyUSB0
+/home/jason/Development/btlock> edit /pyboard/fzxserver.sh
+/home/jason/Development/btlock> repl
+>>> import fzxserver
+```
+
+This creates the file `fzxserver.sh` in the board's flash, edits it using my default editor (micro) and runs it via the REPL.  CTRL-D resets the REPL (needed between runs of the program) and CTRL-X exits the REPL.
+
+Since I'm working the file directly on the board, I have to copy it back to my laptop's filesystem to update the repo:
+```
+/home/jason/Development/btlock> cp /pyboard/fzxserver.py ./
+```
+
+I got a very basic web server working using `asyncio`:
+```
+import socket
+import time
+import asyncio
+
+html = """<!DOCTYPE html>
+<html>
+  <head>
+    <title>bluelocker</title>
+  </head>
+  <body>
+    <h1>Bluelocker</h1>
+  </body>
+</html>
+"""
+
+async def serve(reader, writer):
+  print("client connected")
+  request_line = await reader.readline()
+  print("Request:", request_line)
+  # ignore headers for now
+  while await reader.readline() != b"\r\n":
+    pass
+
+  # TODO: dump all request details to the log for examination
+
+  response = html
+  writer.write("HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n")
+  writer.write(response)
+
+  await writer.drain()
+  await writer.wait_closed()
+  print("client disconnected")
+
+async def main():
+  print("starting server")
+  asyncio.create_task(asyncio.start_server(serve, "0.0.0.0", 80))
+
+  # maybe we need this infinate loop to keep things going?
+  while True:
+    print("heartbeat")
+    #await asyncio.sleep(0.25)
+    await asyncio.sleep(5)
+    
+try:
+  asyncio.run(main())
+finally:
+  asyncio.new_event_loop()
+```
+
+...now to use this to control the bluetooth connection...
+
+
+
+
 ## 11092024
 
 Step 1, get Micropython working on this board.
@@ -118,6 +196,8 @@ That unlocked it!
 So I think there's enough scraps here to perform basic locking/unlocking of a ble device.  Clearly there's lots to do wrt figuring out how to select devices by name (instead of guessing by MAC or whatever) and wrapping it in some sort of interface, but as a PoC, it's not bad!
 
 Hours later I remembered [rshell](https://github.com/dhylands/rshell), that's going to make this easier...
+
+> Note: the flash on this board can be found under `/pyboard` not `/flash`
 
 
 ### References
