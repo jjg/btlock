@@ -76,7 +76,24 @@ finally:
 ...now to use this to control the bluetooth connection...
 
 
+I'd like to make this a proper REST API, which means interpretting the HTTP verbs correctly.  `GET` is easy, but `POST` is a little more complicated.
 
+To read the `POST` body we need to know the length, so we need to parse the headers.  Here's what they look like line-by-line:
+
+```
+Request: b'POST /lock1 HTTP/1.1\r\n'
+Header: b'Host: 192.168.68.74\r\n'
+Header: b'User-Agent: curl/7.81.0\r\n'
+Header: b'Accept: */*\r\n'
+Header: b'Content-Length: 16\r\n'
+Header: b'Content-Type: application/x-www-form-urlencoded\r\n'
+```
+
+
+
+
+### References
+* https://docs.micropython.org/en/latest/library/asyncio.html
 
 ## 11092024
 

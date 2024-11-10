@@ -17,11 +17,24 @@ async def serve(reader, writer):
   print("client connected")
   request_line = await reader.readline()
   print("Request:", request_line)
-  # ignore headers for now
-  while await reader.readline() != b"\r\n":
+
+  # Right now we only care about the length header
+  content_length = 0 
+  header_line = await reader.readline()
+  while header_line != b"\r\n":
+    #print("Header line:",header_line)
+    header_string = str(header_line)[2:-5]
+    #print("Header string:",header_string)
+    header = str(header_string).split(":")
+    #print("Header:",header)
+    if header[0] == "Content-Length":
+      content_length = int(header[1][1:])
+      print("Found Content-Length:", content_length)
+    header_line = await reader.readline()
     pass
 
-  # TODO: dump all request details to the log for examination
+  body = await reader.readexactly(content_length)
+  print("Body:", body)
 
   response = html
   writer.write("HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n")
