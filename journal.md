@@ -124,3 +124,4 @@ So I think there's enough scraps here to perform basic locking/unlocking of a bl
 * https://micropython.org/download/ESP32_GENERIC/
 * https://github.com/micropython/micropython-lib/tree/master/micropython/bluetooth/aioble
 * https://docs.micropython.org/en/latest/reference/packages.html
+* https://docs.micropython.org/en/latest/esp8266/tutorial/filesystem.html
