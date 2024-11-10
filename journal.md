@@ -117,6 +117,7 @@ That unlocked it!
 
 So I think there's enough scraps here to perform basic locking/unlocking of a ble device.  Clearly there's lots to do wrt figuring out how to select devices by name (instead of guessing by MAC or whatever) and wrapping it in some sort of interface, but as a PoC, it's not bad!
 
+Hours later I remembered [rshell](https://github.com/dhylands/rshell), that's going to make this easier...
 
 
 ### References
@@ -125,3 +126,4 @@ So I think there's enough scraps here to perform basic locking/unlocking of a bl
 * https://github.com/micropython/micropython-lib/tree/master/micropython/bluetooth/aioble
 * https://docs.micropython.org/en/latest/reference/packages.html
 * https://docs.micropython.org/en/latest/esp8266/tutorial/filesystem.html
+* https://github.com/dhylands/rshell
